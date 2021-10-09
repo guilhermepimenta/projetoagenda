@@ -1,0 +1,152 @@
+<div>
+
+  <h4>Consulta de Tarefas</h4>
+  <p>Selecione o período de datas para pesquisas tarefas:</p>
+  <hr/>
+
+  <form>
+
+    <div class="row">
+      <div class="col-md-3">
+        <input type="date" class="form-control"/>
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control"/>
+      </div>
+      <div class="col-md-3">
+        <input type="submit" value="Pesquisar Tarefas" class="btn btn-success"/>
+      </div>
+
+    </div>
+
+  </form> 
+
+  <div class="table-responsive">
+  <table class="table table-sm table-hover mt-4">
+    <thead>
+      <tr>
+        <th>Nome da tarefa</th>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Descrição</th>
+        <th>Prioridade</th>
+        <th>Operações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listagem | paginate: { itemsPerPage: 4, currentPage: pagina }">
+        <td>{{item.nome | uppercase}}</td>
+        <td>{{item.data | date: 'dd/MM/yyyy'}}</td>
+        <td>{{item.hora}}</td>
+        <td>{{item.descricao}}</td>
+        <td>
+          <span class="badge bg-success" *ngIf="item.prioridade == '1'">
+            BAIXA
+          </span>
+          <span class="badge bg-warning" *ngIf="item.prioridade == '2'">
+            MEDIA
+          </span>
+          <span class="badge bg-danger" *ngIf="item.prioridade == '3'">
+            ALTA
+          </span>
+          <!-- {{item.prioridade}}</td> -->
+        <td>
+
+          <button class="btn btn-primary btn-sm" 
+          [routerLink]="['/edicao-tarefas', item.idTarefa]">
+          Editar</button>
+          &nbsp;
+          <button class="btn btn-danger btn-sm"
+          (click)="obterTarefa(item.idTarefa)"
+          data-bs-toggle="modal"
+          data-bs-target="#exclusao">
+          Excluir
+          </button>
+
+        </td>
+      </tr>
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="6">
+          Quantidade de tarefas: {{listagem.length}}
+        </td>
+      </tr>
+    </tfoot>
+
+  </table>
+  </div>
+
+  <pagination-controls 
+  (pageChange)="onPageChange($event)"
+  previousLabel="Página anterior"
+  nextLabel="Página posterior">
+  </pagination-controls>
+
+</div>
+
+<div class="modal fade" id="exclusao" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Excluir Tarefa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Deseja realmente excluir a tarefa selecionada?
+        </p>   
+        
+        <div class="row">
+          <div class="col-md-6">
+            Nome da tarefa: 
+          </div>
+          <div class="col-md-6">
+          <strong>{{tarefa.nome | uppercase}}</strong>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            Data da tarefa: 
+          </div>
+          <div class="col-md-6">
+          <strong>{{tarefa.data | date : 'dd/MM/yyyy'}}</strong>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            Hora da tarefa: 
+          </div>
+          <div class="col-md-6">
+          <strong>{{tarefa.hora}}</strong>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            Descrição: 
+          </div>
+          <div class="col-md-6">
+          <strong>{{tarefa.descricao}}</strong>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            Prioridade: 
+          </div>
+          <div class="col-md-6">
+          <strong>{{tarefa.prioridade}}</strong>  
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+        (click)="excluirTarefa()">
+        Confirmar Exclusão
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
